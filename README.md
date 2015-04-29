@@ -1,7 +1,7 @@
 # IVMOOC 2015 FMNH Documentation
 The Field Museum Collections Database Visualization
 
-This repository contains the complete documentation for EMuView, a visualization project for The Field Museum of Natural History. The project was undertaken as part of IVMOOC 2015, a data visualization course based at Indiana University, Bloomington. 
+This repository contains the complete documentation for EMuView, a visualization project for The Field Museum of Natural History. The project was undertaken as part of <a href="http://ivmooc.cns.iu.edu">IVMOOC 2015</a>, a data visualization course based at Indiana University, Bloomington. 
 
 Visualization Demo http://ella.ils.indiana.edu/~kadur/IVMOOCFinal/
 
