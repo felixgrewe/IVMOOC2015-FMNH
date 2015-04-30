@@ -1,13 +1,8 @@
----
-title: "Field Museum"
----
+##Field Museum
+
 ```{r}
 setwd("/Users/Richard/Documents/TextAnalysisWithR")
 library(dplyr)
-library(markdown)
-library(rmarkdown)
-library(knitr)
-library(yaml)
 ```
 
 ####Attach csv files
