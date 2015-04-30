@@ -23,5 +23,5 @@ cumuldata <- sapply(1:length(auditMerged$AudKey),function(i)
 cumulfile <- cbind(auditMerged, cumuldata)
 
 #Write to file
-write.csv(catalog03, file = "catalogPrep.csv")
+write.csv(cumulfile, file = "cumulfile.csv")
                  
