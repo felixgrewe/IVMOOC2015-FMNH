@@ -13,15 +13,11 @@ df <- data.frame(date = datetxt,
                  month = as.numeric(format(datetxt, format = "%m")))
 auditMerged <- cbind(df,aucatalogVars)
 
-#Remove unncessary columns
-auditMerged$AudDate <- NULL
-auditMerged$X <- NULL
-
 #Count cumulative sums
 cumuldata <- sapply(1:length(auditMerged$AudKey),function(i) 
                    sum(auditMerged$AudKey[i]==auditMerged$AudKey[1:i]))
 cumulfile <- cbind(auditMerged, cumuldata)
 
 #Write to file
-write.csv(cumulfile, file = "cumulfile.csv")
+write.csv(catalog03, file = "catalogPrep.csv")
                  
