@@ -34,3 +34,4 @@ write.csv(freq, file = "freq.csv")
 sortTop <- arrange(cumulData, desc(freqall))
 sortTop$X <- NULL
 write.csv(topN, file = "topN.csv")
+
