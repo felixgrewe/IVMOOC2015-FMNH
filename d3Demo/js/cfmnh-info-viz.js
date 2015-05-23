@@ -14,7 +14,8 @@
 		//department and sub-department names
 		// var departmentRange = ["Anthropology", "Botany", "Zoology_Invertebrates", "Zoology_Amphibians and Reptiles", "Zoology_Mammals", "Zoology_Insects", "Zoology_Fishes", "Zoology_Birds", "Geology_Paleobotany", "Geology_Fossil Invertebrates"]
 		//only main department names
-		var deptRange = ["Anthropology", "Botany", "Zoology", "Geology"];
+		// var deptRange = ["Anthropology", "Botany", "Zoology", "Geology"];
+		var deptData = {};
 
 		function radius(d) {
 			return d.cumulative;
@@ -43,21 +44,25 @@
 			left : 39.5
 		},
 		// Set the width element according to window width
-		width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth, height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+		width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth, height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight,
+		// count of all the specimens in the dataset
+		totalSpecimens = 0,
+		//running count of x coordinate for dept columns
+		startX = margin.left;
 
 		//account for margins in the height and width
-		width = 0.75 * width - margin.right - margin.left, height = 0.75* height - margin.top - margin.bottom;
+		width = 0.75 * width - margin.right - margin.left, height = 0.75 * height - margin.top - margin.bottom;
 
 		// cant add domains since the data hasn't been imported
 		// x axis scales
-		var xScale = d3.scale.ordinal().rangeRoundBands([margin.left, width], 0.01),
+		// var xScale = d3.scale.ordinal().rangeRoundBands([margin.left, width], 0.01),
 		//y axis scale
 		yScale = d3.scale.linear().domain([0, 100]).range([height, margin.top]),
 		//radius axis scale
 		rScale = d3.scale.sqrt().range([5, 40]);
 
 		// x Axis data
-		var xAxis = d3.svg.axis().orient("bottom").scale(xScale),
+		// var xAxis = d3.svg.axis().orient("bottom"),
 		// y Axis data
 		yAxis = d3.svg.axis().scale(yScale).orient("left");
 
@@ -74,7 +79,7 @@
 		}).text(dateRange[0]);
 
 		// Add the x-axis.
-		svg.append("g").attr("class", "x axis").attr("transform", "translate(0," + height + ")").call(xAxis);
+		// svg.append("g").attr("class", "x axis").attr("transform", "translate(0," + height + ")").call(xAxis);
 
 		// Add the y-axis.
 		svg.append("g").attr("class", "y axis").call(yAxis);
@@ -90,12 +95,34 @@
 				console.log(error);
 			}
 
+			// resolve different departments and their respective counts
+			specimens.forEach(function(d) {
+				if (!deptData[d.department.split("_")[0]]) {
+					deptData[d.department.split("_")[0]] = {};
+					deptData[d.department.split("_")[0]].count = 1;
+					totalSpecimens++;
+				} else {
+					deptData[d.department.split("_")[0]].count++;
+					totalSpecimens++;
+				}
+			});
+
+			//calculate starting x coordinate and width of each department column
+			d3.keys(deptData).forEach(function(d) {
+				// console.log(d, i);
+				deptData[d].x = startX;
+				deptData[d].w = deptData[d].count / totalSpecimens * (0.995 * width);
+				startX += deptData[d].w + 0.005 * width;
+
+			});
+
+			console.log(deptData, totalSpecimens);
 			//set domains for scales dynamically since upper bounds are unknown
 			//right now set using magic numbers till it can be calulated on the fly
 			rScale.domain([0, 1134]);
-			xScale.domain(specimens.map(function(d) {
-				return x(d);
-			}));
+			// xScale.domain(specimens.map(function(d) {
+				// return x(d);
+			// }));
 
 			//create a bisector to interpret data for dates that have no data available
 			var bisect = d3.bisector(function(d) {
@@ -103,25 +130,29 @@
 			});
 
 			//create background bars to separate department space
-			var bar = svg.append("g").attr("class", "deptBars").selectAll(".deptBars rect").data(deptRange).enter().append("rect").attr({
+			var bar = svg.append("g").attr("class", "deptBars").selectAll(".deptBars rect").data(d3.keys(deptData)).enter().append("rect").attr({
 				"class" : function(d) {
 					return d;
 				},
 				"x" : function(d) {
-					return xScale(d);
+					return deptData[d].x;
 				},
 				"y" : 0,
-				"width" : xScale.rangeBand(),
+				"width" : function(d) {
+					// console.log(d);
+					return deptData[d].w;
+				},
 				"height" : height
 			});
 
 			//write the names for each department
-			var name = svg.append("g").attr("class", "deptNames").selectAll(".deptNames text").data(deptRange).enter().append("text").attr({
+			var name = svg.append("g").attr("class", "deptNames").selectAll(".deptNames text").data(d3.keys(deptData)).enter().append("text").attr({
 				"class" : function(d) {
 					return d.toLowerCase();
 				},
 				"x" : function(d) {
-					return xScale(d) + xScale.rangeBand() / 2;
+					// return xScale(d) + xScale.rangeBand() / 2;
+					return deptData[d].x + deptData[d].w / 2;
 				},
 				"y" : 30,
 				"text-anchor" : "middle"
@@ -132,19 +163,19 @@
 			});
 
 			// write the names for respective subdepartments if available
-			var name = svg.append("g").attr("class", "subDeptNames").selectAll(".subDeptNames text").data(deptRange).enter().append("text").attr({
-				"class" : function(d) {
-					return d;
-				},
-				"x" : function(d) {
-					return xScale(d) + xScale.rangeBand() / 2;
-				},
-				"y" : 60,
-				"text-anchor" : "middle"
-			}).text(function(d) {
-				var dept = d.split("_");
-				return dept[1] != undefined ? dept[1] : "";
-			});
+			// var name = svg.append("g").attr("class", "subDeptNames").selectAll(".subDeptNames text").data(deptRange).enter().append("text").attr({
+			// "class" : function(d) {
+			// return d;
+			// },
+			// "x" : function(d) {
+			// return xScale(d) + xScale.rangeBand() / 2;
+			// },
+			// "y" : 60,
+			// "text-anchor" : "middle"
+			// }).text(function(d) {
+			// var dept = d.split("_");
+			// return dept[1] != undefined ? dept[1] : "";
+			// });
 
 			//Initialize all specimens to 2008-01
 			var dot = svg.append("g").attr("class", "specimens").selectAll(".specimen").data(interpret("2008-01")).enter().append("circle").attr({
@@ -152,8 +183,9 @@
 					return "specimen " + x(d).split("_")[0];
 				},
 				'cx' : function(d, i) {
+					console.log(deptData[x(d)]);
 					//account for radius space of 20px - 25px on either side to prevent bubbles from overrunning the department bars?
-					return xScale(x(d)) + Math.floor(Math.random() * (xScale.rangeBand() - 40)) + 20;
+					return deptData[x(d)].x + Math.floor(Math.random() * (deptData[x(d)].w - 40)) + 20;
 				}
 			}).style({
 				"stroke" : "white"
