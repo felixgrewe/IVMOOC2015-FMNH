@@ -197,7 +197,7 @@
 			});
 
 			// Start a transition that interpolates the data based on dates.
-			svg.transition().duration(50000).ease("sine").tween('yearMonth', tweenYearMonth);
+			svg.transition().duration(90000).ease("sine").tween('yearMonth', tweenYearMonth);
 			//.each("end", enableInteraction);
 
 			function position(dot) {
