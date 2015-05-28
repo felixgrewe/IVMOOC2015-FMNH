@@ -66,7 +66,7 @@
 		// y Axis data
 		yAxis = d3.svg.axis().scale(yScale).orient("left");
 
-		var svg = d3.select('body').append('svg').attr({
+		var svg = d3.select('body #viz').append('svg').attr({
 			'width' : width + margin.right + margin.left,
 			'height' : height + margin.top + margin.bottom
 		});
@@ -116,12 +116,12 @@
 
 			});
 
-			console.log(deptData, totalSpecimens);
+			// console.log(deptData, totalSpecimens);
 			//set domains for scales dynamically since upper bounds are unknown
 			//right now set using magic numbers till it can be calulated on the fly
 			rScale.domain([0, 1134]);
 			// xScale.domain(specimens.map(function(d) {
-				// return x(d);
+			// return x(d);
 			// }));
 
 			//create a bisector to interpret data for dates that have no data available
@@ -183,7 +183,7 @@
 					return "specimen " + x(d).split("_")[0];
 				},
 				'cx' : function(d, i) {
-					console.log(deptData[x(d)]);
+					// console.log(deptData[x(d)]);
 					//account for radius space of 20px - 25px on either side to prevent bubbles from overrunning the department bars?
 					return deptData[x(d)].x + Math.floor(Math.random() * (deptData[x(d)].w - 40)) + 20;
 				}
@@ -198,7 +198,6 @@
 
 			// Start a transition that interpolates the data based on dates.
 			svg.transition().duration(90000).ease("sine").tween('yearMonth', tweenYearMonth);
-			//.each("end", enableInteraction);
 
 			function position(dot) {
 				dot.transition().duration(200).ease("linear").attr({
@@ -286,6 +285,21 @@
 				}
 			}
 
+
+			$('#slider').slider({
+				min : 0,
+				max : dateRange.length - 1,
+				slide : function(event, ui) {
+					console.log(dateRange[ui.value]);
+
+					//cancel all transitions
+					svg.transition().duration(0);
+
+					//call display date to show correct year-month combo
+					//sending ui.value as displayDate takes range value in array
+					displayDate(ui.value);
+				}
+			}).width(width + margin.left + margin.right).css('margin', '10px auto');
 		});
 
 	}(document, window, $))
