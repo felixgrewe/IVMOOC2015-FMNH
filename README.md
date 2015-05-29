@@ -4,7 +4,7 @@ The Field Museum Collections Database Visualization
 This repository contains the complete documentation for EMuView, a visualization project for The Field Museum of Natural History. The project was undertaken as part of <a href="http://ivmooc.cns.iu.edu">IVMOOC 2015</a>, a data visualization course based at Indiana University, Bloomington. 
 
 Updated demo, with context and legend (code in cyberDH folder) [www.indiana.edu/~cyberdh/FMNH/](http://www.indiana.edu/~cyberdh/FMNH/)  
-Orginal demo updated (code in D3.js folder) [ella.ils.indiana.edu/~kadur/IVMOOCFinal](http://ella.ils.indiana.edu/~kadur/IVMOOCFinal)   
+Orginal demo updated (code in d3Demo folder) [ella.ils.indiana.edu/~kadur/IVMOOCFinal](http://ella.ils.indiana.edu/~kadur/IVMOOCFinal)   
 Report [rshiggins/FMNH/Report.pdf](http://www.rshiggins.net/FMNH/Report.pdf)
 
 Designed and built by Kartik Adur, Richard Higgins, Jingsha Luo,	Joshua Quick,	Wensi Wang. 
